@@ -11,6 +11,7 @@ public interface NewsService {
     Observable<NewsResult> getEverything(
             @Query("q") String query,
             @Query("sortBy") String sortBy,
+            @Query("language") String language,
             @Query("page") int page,
             @Query("pageSize") int pageSize
     );

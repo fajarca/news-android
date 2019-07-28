@@ -25,7 +25,8 @@ class NewsBoundaryCallback(
 
     companion object {
         private const val NETWORK_PAGE_SIZE = 20
-        private const val SORT_BY_PUBLISHED_AT = "publishedAt"
+        private const val SORT_BY = "popularity"
+        private const val LANGUAGE = "en"
     }
 
 
@@ -82,7 +83,7 @@ class NewsBoundaryCallback(
 
         setNetworkState(UiState.Loading())
 
-        service.getEverything(query, SORT_BY_PUBLISHED_AT, page, pageSize)
+        service.getEverything(query, SORT_BY, LANGUAGE, page, pageSize)
                 .map { mapData(it.articles) }
                 .subscribeOn((Schedulers.io()))
                 .observeOn(Schedulers.io())
