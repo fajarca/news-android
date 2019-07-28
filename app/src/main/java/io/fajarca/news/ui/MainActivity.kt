@@ -1,6 +1,5 @@
 package io.fajarca.news.ui
 
-import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
@@ -22,11 +21,13 @@ import dagger.android.AndroidInjection
 import io.fajarca.news.R
 import io.fajarca.news.common.UiState
 import io.fajarca.news.databinding.ActivityMainBinding
+import io.fajarca.news.util.plusAssign
 import io.fajarca.news.viewmodel.NewsViewModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.observers.DisposableObserver
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -159,13 +160,13 @@ class MainActivity : AppCompatActivity() {
         viewModel.getHeadline(countryCode, FIRST_PAGE, NUM_OF_HEADLINE_NEWS_TO_SHOW)
     }
 
-    @SuppressLint("CheckResult")
+
     private fun initBannerSwipeScheduler() {
-        Observable.interval(SWIPE_INTERVAL, TimeUnit.MILLISECONDS)
+        compositeDisposable += Observable.interval(SWIPE_INTERVAL, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeWith(object : io.reactivex.Observer<Long> {
-                override fun onSubscribe(d: Disposable) {
-                    compositeDisposable.add(d)
+            .subscribeWith(object : DisposableObserver<Long>(){
+                override fun onComplete() {
+
                 }
 
                 override fun onNext(t: Long) {
@@ -178,14 +179,9 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         viewPager.setCurrentItem(0, true)
                     }
-
                 }
 
                 override fun onError(e: Throwable) {
-
-                }
-
-                override fun onComplete() {
 
                 }
             })
@@ -311,6 +307,11 @@ class MainActivity : AppCompatActivity() {
             hideEmptyResultLayout()
             showRecyclerView()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
     }
 
 }
