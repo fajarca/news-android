@@ -19,8 +19,8 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjection
 import io.fajarca.news.R
 import io.fajarca.news.common.UiState
-import io.fajarca.news.common.hide
-import io.fajarca.news.common.show
+import io.fajarca.news.common.gone
+import io.fajarca.news.common.visible
 import io.fajarca.news.databinding.ActivityMainBinding
 import io.fajarca.news.util.plusAssign
 import io.fajarca.news.viewmodel.NewsViewModel
@@ -250,7 +250,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onEmptyNewsData(onEmptyMessage: Int) {
-        binding.recyclerView.hide()
+        binding.recyclerView.gone()
 
         showEmptyResultLayout(onEmptyMessage)
 
@@ -258,9 +258,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onErrorFetchNewsData(errorMessage: String) {
-        binding.recyclerView.hide()
+        binding.recyclerView.gone()
 
-        binding.contentResult.layoutError.show()
+        binding.contentResult.layoutError.visible()
         binding.contentResult.tvError.text = errorMessage
 
         binding.executePendingBindings()
@@ -268,27 +268,27 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun showProgressBar() {
-        binding.progressBar.show()
+        binding.progressBar.visible()
     }
     private fun hideProgressBar() {
-        binding.progressBar.hide()
+        binding.progressBar.gone()
     }
 
     private fun showEmptyResultLayout(messageResId : Int) {
-        binding.contentResult.layoutError.show()
+        binding.contentResult.layoutError.visible()
         binding.contentResult.tvError.text = getString(messageResId)
         hideProgressBar()
         binding.executePendingBindings()
     }
 
     private fun hideEmptyResultLayout() {
-        binding.contentResult.layoutError.hide()
+        binding.contentResult.layoutError.gone()
         hideProgressBar()
         binding.executePendingBindings()
     }
 
     private fun showRecyclerView() {
-        binding.recyclerView.show()
+        binding.recyclerView.visible()
     }
 
 
