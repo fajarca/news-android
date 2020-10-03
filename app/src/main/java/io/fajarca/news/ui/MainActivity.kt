@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.Menu
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -20,6 +19,8 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjection
 import io.fajarca.news.R
 import io.fajarca.news.common.UiState
+import io.fajarca.news.common.gone
+import io.fajarca.news.common.visible
 import io.fajarca.news.databinding.ActivityMainBinding
 import io.fajarca.news.util.plusAssign
 import io.fajarca.news.viewmodel.NewsViewModel
@@ -153,7 +154,7 @@ class MainActivity : AppCompatActivity() {
         var countryCode = "id"
         val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-        if (telephonyManager?.networkCountryIso != null) {
+        if (telephonyManager.networkCountryIso != null) {
             countryCode = telephonyManager.networkCountryIso
         }
 
@@ -170,8 +171,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onNext(t: Long) {
-                    val currentViewpagerPosition = viewPager!!.currentItem
-                    val headlineBannerSize = headlineAdapter!!.count
+                    val currentViewpagerPosition = viewPager.currentItem
+                    val headlineBannerSize = headlineAdapter.count
 
 
                     if (currentViewpagerPosition < headlineBannerSize - 1) {
@@ -199,11 +200,7 @@ class MainActivity : AppCompatActivity() {
         registerTextChangeListener(searchView)
             .debounce(300, TimeUnit.MILLISECONDS)
             .filter { text ->
-                if (text.isEmpty()) {
-                    false
-                } else {
-                    true
-                }
+                !text.isEmpty()
             } //Filter unwanted string (empty string) to avoid unnecessary network call
             .distinctUntilChanged() //To avoid duplicate network call.  Suppress duplicate consecutive items emitted by the source Observable.
             .observeOn(AndroidSchedulers.mainThread())
@@ -227,9 +224,7 @@ class MainActivity : AppCompatActivity() {
             })
 
 
-        if (searchManager != null) {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        }
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
 
         return true
     }
@@ -255,7 +250,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onEmptyNewsData(onEmptyMessage: Int) {
-        binding.recyclerView.visibility = View.GONE
+        binding.recyclerView.gone()
 
         showEmptyResultLayout(onEmptyMessage)
 
@@ -263,9 +258,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onErrorFetchNewsData(errorMessage: String) {
-        binding.recyclerView.visibility = View.GONE
+        binding.recyclerView.gone()
 
-        binding.contentResult.layoutError.visibility = View.VISIBLE
+        binding.contentResult.layoutError.visible()
         binding.contentResult.tvError.text = errorMessage
 
         binding.executePendingBindings()
@@ -273,27 +268,27 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun showProgressBar() {
-        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.visible()
     }
     private fun hideProgressBar() {
-        binding.progressBar.visibility = View.GONE
+        binding.progressBar.gone()
     }
 
     private fun showEmptyResultLayout(messageResId : Int) {
-        binding.contentResult.layoutError.visibility = View.VISIBLE
+        binding.contentResult.layoutError.visible()
         binding.contentResult.tvError.text = getString(messageResId)
         hideProgressBar()
         binding.executePendingBindings()
     }
 
     private fun hideEmptyResultLayout() {
-        binding.contentResult.layoutError.visibility = View.GONE
+        binding.contentResult.layoutError.gone()
         hideProgressBar()
         binding.executePendingBindings()
     }
 
     private fun showRecyclerView() {
-        binding.recyclerView.visibility = View.VISIBLE
+        binding.recyclerView.visible()
     }
 
 
